@@ -1,23 +1,52 @@
+
 import type { Message } from "discord.js";
+import { classifyIntent } from "../../ai/classifyIntent.js";
+import { generateResponse } from "../../ai/generateResponse.js";
 
 export async function handleMessage(message: Message) {
-  console.log("messageCreateイベント発火");
-
-  console.log("受信チャンネルID:", message.channelId);
-  console.log("設定チャンネルID:", process.env.TARGET_CHANNEL_ID);
-
+  // Bot自身のメッセージには反応しない
   if (message.author.bot) {
-    console.log("Botのメッセージなので無視");
     return;
   }
 
+  // 対象チャンネル以外には反応しない
   if (message.channelId !== process.env.TARGET_CHANNEL_ID) {
-    console.log("対象外チャンネルなので無視");
     return;
   }
 
-  console.log("受信メッセージ:", {
-    user: message.author.username,
-    content: message.content,
-  });
+  // 空メッセージには反応しない
+  const content = message.content.trim();
+
+  if (!content) {
+    return;
+  }
+
+  try {
+    // AIでメッセージの意図を分類
+    const intent = await classifyIntent(content);
+
+    console.log("メッセージ:", content);
+    console.log("分類結果:", intent);
+
+    // 愛情表現以外には返信しない
+    if (intent === "NOT_LOVE") {
+      return;
+    }
+
+    // AIで返答を生成
+    const reply = await generateResponse(content, intent);
+
+    // Discordで返信
+    await message.reply({
+      content: reply,
+      allowedMentions: {
+        repliedUser: false,
+      },
+    });
+
+    console.log("itoの返信:", reply);
+
+  } catch (error) {
+    console.error("メッセージ処理エラー:", error);
+  }
 }
