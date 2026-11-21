@@ -41,5 +41,6 @@ export async function handleMessage(message: Message) {
     });
 
   } catch (error) {
+    console.log("Discord Bot起動成功");
   }
 }

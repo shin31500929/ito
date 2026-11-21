@@ -26,15 +26,12 @@ const client = new Client({
 
 client.once("clientReady", (readyClient) => {
   console.log(`ログイン成功: ${readyClient.user.tag}`);
-  console.log("WebSocket接続状態:", readyClient.ws.status);
 });
 
 client.on("messageCreate", async (message: Message) => {
-
   try {
     await handleMessage(message);
   } catch (error) {
+    console.error("メッセージ処理エラー:", error);
   }
 });
-
-client.login(token);
