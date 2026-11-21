@@ -1,46 +1,29 @@
+
 import type { Message } from "discord.js";
-import { classifyIntent } from "../../ai/classifyIntent.js";
-import { generateResponse } from "../../ai/generateResponse.js";
+import { processMessage } from "../../ai/itoAI.js";
 
 export async function handleMessage(message: Message) {
-  // Bot自身のメッセージには反応しない
-  if (message.author.bot) {
-    return;
-  }
+  if (message.author.bot) return;
 
-  // 対象チャンネル以外には反応しない
-  if (message.channelId !== process.env.TARGET_CHANNEL_ID) {
-    return;
-  }
+  if (message.channelId !== process.env.TARGET_CHANNEL_ID) return;
 
-  // 空メッセージには反応しない
   const content = message.content.trim();
 
-  if (!content) {
-    return;
-  }
+  if (!content) return;
 
   try {
-    // AIでメッセージの意図を分類
-    const intent = await classifyIntent(content);
+    const result = await processMessage(content);
 
-    // 愛情表現以外には返信しない
-    if (intent === "NOT_LOVE") {
-      return;
-    }
+    if (result.intent === "NOT_LOVE") return;
 
-    // AIで返答を生成
-    const reply = await generateResponse(content, intent);
-
-    // Discordで返信
     await message.reply({
-      content: reply,
+      content: result.reply,
       allowedMentions: {
         repliedUser: false,
       },
     });
 
   } catch (error) {
-    console.log("Discord Bot起動成功");
+    console.error("メッセージ処理エラー:", error);
   }
 }

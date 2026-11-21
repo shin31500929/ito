@@ -25,7 +25,7 @@ const client = new Client({
 });
 
 client.once("clientReady", (readyClient) => {
-  console.log(`ログイン成功: ${readyClient.user.tag}`);
+  readyClient.user.setStatus("online");
 });
 
 client.on("messageCreate", async (message: Message) => {
@@ -35,3 +35,5 @@ client.on("messageCreate", async (message: Message) => {
     console.error("メッセージ処理エラー:", error);
   }
 });
+
+client.login(token);
