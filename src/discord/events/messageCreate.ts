@@ -25,9 +25,6 @@ export async function handleMessage(message: Message) {
     // AIでメッセージの意図を分類
     const intent = await classifyIntent(content);
 
-    console.log("メッセージ:", content);
-    console.log("分類結果:", intent);
-
     // 愛情表現以外には返信しない
     if (intent === "NOT_LOVE") {
       return;
@@ -44,9 +41,7 @@ export async function handleMessage(message: Message) {
       },
     });
 
-    console.log("itoの返信:", reply);
-
   } catch (error) {
-    console.error("メッセージ処理エラー:", error);
+    //console.error("メッセージ処理エラー:", error);
   }
 }
