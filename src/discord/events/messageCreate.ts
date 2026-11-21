@@ -1,4 +1,3 @@
-
 import type { Message } from "discord.js";
 import { classifyIntent } from "../../ai/classifyIntent.js";
 import { generateResponse } from "../../ai/generateResponse.js";
