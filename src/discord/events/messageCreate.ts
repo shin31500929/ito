@@ -42,6 +42,5 @@ export async function handleMessage(message: Message) {
     });
 
   } catch (error) {
-    //console.error("メッセージ処理エラー:", error);
   }
 }
